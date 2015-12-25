@@ -1,0 +1,5 @@
+unconfined_ldconfig_t
+unconfined_t
+init_t
+kernel_t
+initrc_t

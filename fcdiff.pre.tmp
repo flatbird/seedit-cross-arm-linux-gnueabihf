@@ -1,0 +1,26 @@
+#line 1 "./macros/mcs_macros.te"
+##These are taken from serefpolicy 2.3.7
+
+########################################
+#
+# gen_user(username, prefix, role_set, mls_defaultlevel, mls_range, [mcs_categories])
+#
+#line 13
+
+
+########################################
+#
+# gen_context(context,mls_sensitivity,[mcs_categories])
+#
+#line 20
+
+########################################
+#
+# gen_cats(N)
+#
+# declares categores c0 to c(N-1)
+#
+#line 30
+
+
+

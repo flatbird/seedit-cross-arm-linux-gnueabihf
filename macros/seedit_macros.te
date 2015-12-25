@@ -1,0 +1,699 @@
+### Below macros are generated from spdl_spec.xml by genmacro.py
+####Following macros are used to represent set of permissions, secclasses
+define(`all_file_class',`{ dir file lnk_file sock_file fifo_file chr_file blk_file }')
+
+define(`notdevfile_class',`{ dir file lnk_file sock_file fifo_file }')
+
+define(`devfile_class',`{ chr_file blk_file }')
+
+define(`notdevdir_class',`{ file lnk_file sock_file fifo_file }')
+
+define(`notdir_class',`{ file lnk_file sock_file fifo_file chr_file blk_file }')
+
+define(`socket_common_base_perms',`{ bind listen accept connect create shutdown getattr getopt setopt ioctl lock setattr }')
+
+define(`socket_common_all_perms',`{ ioctl read write create getattr setattr lock relabelfrom relabelto append bind connect listen accept getopt setopt shutdown recvfrom sendto recv_msg send_msg name_bind }')
+
+define(`tcp_socket_all_perms',`{ ioctl read write create getattr setattr lock relabelfrom relabelto append bind connect listen accept getopt setopt shutdown recvfrom sendto recv_msg send_msg name_bind connectto newconn acceptfrom node_bind name_connect }')
+
+define(`tcp_socket_except_connect',`{ ioctl read write create getattr setattr lock relabelfrom relabelto append bind listen accept getopt setopt shutdown recvfrom sendto recv_msg send_msg name_bind connectto newconn acceptfrom node_bind }')
+
+define(`udp_socket_all_perms',`{ ioctl read write create getattr setattr lock relabelfrom relabelto append bind connect listen accept getopt setopt shutdown recvfrom sendto recv_msg send_msg name_bind node_bind }')
+
+define(`udp_socket_except_connect',`{ ioctl read write create getattr setattr lock relabelfrom relabelto append bind listen accept getopt setopt shutdown recvfrom sendto recv_msg send_msg name_bind node_bind }')
+
+##Integrated permissions for file allow
+define(`allow_file_s',`
+#
+allow $1 $2:dir { read search };
+')
+
+define(`allow_file_r',`
+#
+allow $1 $2:{ fifo_file file lnk_file sock_file } { ioctl lock read };
+allow $1 $2:dir { ioctl lock };
+')
+
+define(`allow_file_x',`
+#
+allow $1 $2:{ dir fifo_file file lnk_file sock_file } execute;
+allow $1 $2:file execute_no_trans;
+')
+
+define(`allow_file_w',`
+#
+allow $1 $2:{ dir fifo_file file lnk_file sock_file } { append create link rename setattr unlink write };
+allow $1 $2:dir { reparent rmdir };
+')
+
+define(`allow_file_o',`
+#
+allow $1 $2:{ fifo_file file lnk_file sock_file } write;
+')
+
+define(`allow_file_a',`
+#
+allow $1 $2:{ fifo_file file lnk_file sock_file } append;
+')
+
+define(`allow_file_e',`
+#
+allow $1 $2:dir { rename reparent rmdir unlink write };
+allow $1 $2:{ fifo_file file lnk_file sock_file } { rename unlink };
+')
+
+define(`allow_file_c',`
+#
+allow $1 $2:dir { append create link write };
+allow $1 $2:{ fifo_file file lnk_file sock_file } { create link };
+')
+
+define(`allow_file_t',`
+#
+allow $1 $2:{ dir fifo_file file lnk_file sock_file } setattr;
+')
+
+define(`allow_file_m',`
+#
+allow $1 $2:file execmod;
+')
+
+define(`allow_file_relabel',`
+#This is used intenally in allowpriv part_relabel
+allow $1 $2:{ blk_file chr_file dir fifo_file file lnk_file sock_file } { relabelfrom relabelto };
+')
+
+define(`allow_file_devcreate',`
+#This is used internally in allowpriv devcreate
+allow $1 $2:{ blk_file chr_file } { create link rename unlink };
+')
+
+define(`allow_file_setattr',`
+#This is used internally in allowpriv setattr
+allow $1 $2:{ blk_file chr_file dir fifo_file file lnk_file sock_file } setattr;
+')
+
+##Integrated permissions for allowdev
+define(`allow_file_dev_s',`
+#
+#allow $1 $2:{ blk_file chr_file } getattr;
+')
+
+define(`allow_file_dev_r',`
+#
+allow $1 $2:{ blk_file chr_file } { ioctl lock read };
+')
+
+define(`allow_file_dev_x',`
+#
+allow $1 $2:{ blk_file chr_file } execute;
+')
+
+define(`allow_file_dev_w',`
+#
+allow $1 $2:{ blk_file chr_file } { append setattr write };
+')
+
+define(`allow_file_dev_o',`
+#
+allow $1 $2:{ blk_file chr_file } write;
+')
+
+define(`allow_file_dev_a',`
+#
+allow $1 $2:{ blk_file chr_file } append;
+')
+
+define(`allow_file_dev_e',`
+#
+allow $1 $2:{ blk_file chr_file } { rename unlink };
+')
+
+define(`allow_file_dev_c',`
+#
+allow $1 $2:{ blk_file chr_file } { create link };
+')
+
+define(`allow_file_dev_t',`
+#
+allow $1 $2:{ blk_file chr_file } setattr;
+')
+
+##Permissions integrated in allowdev -tty rules
+define(`allow_tty_r',`
+#
+allow $1 $2:{ chr_file lnk_file } { getattr ioctl lock read };
+allow $1 $2:dir { getattr ioctl lock read search };
+')
+
+define(`allow_tty_w',`
+#
+allow $1 $2:{ chr_file lnk_file } { append setattr write };
+allow $1 $2:dir { setattr write };
+')
+
+define(`allow_tty_change',`
+#
+allow $1 $2:{ chr_file lnk_file } { create relabelfrom relabelto rename unlink };
+allow $1 $2:dir { create link reparent rmdir unlink };
+')
+
+##Permissions integrated in allowdev -pts rules
+define(`allow_pts_r',`
+#
+allow $1 $2:{ chr_file lnk_file } { getattr ioctl lock read };
+allow $1 $2:dir { getattr ioctl lock read search };
+')
+
+define(`allow_pts_w',`
+#
+allow $1 $2:{ chr_file lnk_file } { append setattr write };
+allow $1 $2:dir { setattr write };
+')
+
+define(`allow_pts_change',`
+#
+allow $1 $2:{ chr_file lnk_file } { create relabelfrom relabelto rename unlink };
+allow $1 $2:dir { create link reparent rmdir unlink };
+')
+
+##Integrated permissions for allownet rules
+define(`allow_network_tcp_use',`
+#This is used only when allownet -netif,-node is described.
+allow $1 $2:tcp_socket { accept append bind connect create getattr getopt ioctl listen lock read setattr setopt shutdown write };
+')
+
+define(`allow_network_udp_use',`
+#
+allow $1 $2:udp_socket { accept append bind connect create getattr getopt ioctl listen lock read setattr setopt shutdown write };
+')
+
+define(`allow_network_raw_use',`
+#
+allow $1 $2:rawip_socket { accept bind connect create getattr getopt ioctl listen lock setattr setopt shutdown };
+allow $1 $2:rawip_socket { append read write };
+allow $1 self:capability net_raw;
+')
+
+define(`allow_network_tcp_server',`
+#
+allow $1 $2:tcp_socket name_bind;
+allow $1 port_type:tcp_socket { recv_msg send_msg };
+')
+
+define(`allow_network_tcp_client',`
+#
+allow $1 $2:tcp_socket { name_connect recv_msg send_msg };
+')
+
+define(`allow_network_udp_server',`
+#
+allow $1 $2:udp_socket name_bind;
+allow $1 unpriv_port_type:udp_socket { recv_msg send_msg };
+')
+
+define(`allow_network_udp_client',`
+#
+allow $1 $2:udp_socket { recv_msg send_msg };
+')
+
+define(`allow_network_node_tcp_send',`
+#
+allow $1 $2:node tcp_send;
+')
+
+define(`allow_network_node_udp_send',`
+#
+allow $1 $2:node udp_send;
+')
+
+define(`allow_network_node_rawip_send',`
+#
+allow $1 $2:node rawip_send;
+')
+
+define(`allow_network_node_tcp_recv',`
+#
+allow $1 $2:node tcp_recv;
+')
+
+define(`allow_network_node_udp_recv',`
+#
+allow $1 $2:node udp_recv;
+')
+
+define(`allow_network_node_rawip_recv',`
+#
+allow $1 $2:node rawip_recv;
+')
+
+define(`allow_network_node_tcp_bind',`
+#
+allow $1 $2:tcp_socket node_bind;
+')
+
+define(`allow_network_node_udp_bind',`
+#
+allow $1 $2:udp_socket node_bind;
+')
+
+define(`allow_network_node_rawip_bind',`
+#
+allow $1 $2:rawip_socket node_bind;
+')
+
+define(`allow_network_netif_tcp_send',`
+#
+allow $1 $2:netif tcp_send;
+')
+
+define(`allow_network_netif_udp_send',`
+#
+allow $1 $2:netif udp_send;
+')
+
+define(`allow_network_netif_rawip_send',`
+#
+allow $1 $2:netif rawip_send;
+')
+
+define(`allow_network_netif_tcp_recv',`
+#
+allow $1 $2:netif tcp_recv;
+')
+
+define(`allow_network_netif_udp_recv',`
+#
+allow $1 $2:netif udp_recv;
+')
+
+define(`allow_network_netif_rawip_recv',`
+#
+allow $1 $2:netif rawip_recv;
+')
+
+##Integrated permissions for allowcom rules
+define(`allow_ipc_unix_r',`
+#
+allow $1 $2:unix_dgram_socket { accept bind listen name_bind read recv_msg recvfrom };
+allow $1 $2:unix_stream_socket { accept bind listen name_bind read recv_msg recvfrom };
+')
+
+define(`allow_ipc_unix_w',`
+#
+allow $1 $2:unix_dgram_socket { append connect send_msg sendto write };
+allow $1 $2:unix_stream_socket { append connect connectto send_msg sendto write };
+')
+
+define(`allow_ipc_sem_r',`
+#
+allow $1 $2:sem { associate getattr read unix_read };
+')
+
+define(`allow_ipc_sem_w',`
+#
+allow $1 $2:sem { create destroy setattr unix_write write };
+')
+
+define(`allow_ipc_msg_r',`
+#
+allow $1 $2:msg send;
+')
+
+define(`allow_ipc_msg_w',`
+#
+allow $1 $2:msg receive;
+')
+
+define(`allow_ipc_msgq_r',`
+#
+allow $1 $2:msgq { associate getattr read unix_read };
+')
+
+define(`allow_ipc_msgq_w',`
+#
+allow $1 $2:msgq { create destroy enqueue setattr unix_write write };
+')
+
+define(`allow_ipc_shm_r',`
+#
+allow $1 $2:shm { associate getattr read unix_read };
+')
+
+define(`allow_ipc_shm_w',`
+#
+allow $1 $2:shm { create destroy lock setattr unix_write write };
+')
+
+define(`allow_ipc_pipe_r',`
+#
+allow $1 $2:fifo_file { getattr ioctl lock read };
+')
+
+define(`allow_ipc_pipe_w',`
+#
+allow $1 $2:fifo_file { append create execute link lock mounton quotaon relabelfrom relabelto rename setattr unlink write };
+')
+
+define(`allow_signal_sigchld',`
+#
+allow $1 $2:process sigchld;
+')
+
+define(`allow_signal_sigkill',`
+#
+allow $1 $2:process sigkill;
+')
+
+define(`allow_signal_sigstop',`
+#
+allow $1 $2:process sigstop;
+')
+
+define(`allow_signal_signull',`
+#
+allow $1 $2:process signull;
+')
+
+define(`allow_signal_sigother',`
+#
+allow $1 $2:process signal;
+')
+
+##Integrated permissions in allowpriv rule
+define(`allow_admin_audit_read',`
+#
+allow $1 self:netlink_audit_socket { nlmsg_read nlmsg_readpriv };
+')
+
+define(`allow_admin_audit_write',`
+#
+allow $1 self:netlink_audit_socket nlmsg_relay;
+')
+
+define(`allow_admin_audit_adm',`
+#
+allow $1 self:netlink_audit_socket nlmsg_write;
+')
+
+define(`allow_admin_klog_read',`
+#
+allow $1 kernel_t:system syslog_read;
+')
+
+define(`allow_admin_klog_adm',`
+#
+allow $1 kernel_t:system { syslog_console syslog_mod };
+')
+
+define(`allow_admin_sys_pacct',`
+#
+allow $1 self:capability sys_pacct;
+')
+
+define(`allow_admin_cap_sys_module',`
+#
+allow $1 self:capability sys_module;
+')
+
+define(`allow_admin_netlink',`
+#
+allow $1 self:netlink_socket { accept append bind connect create getattr getopt ioctl listen lock name_bind read recv_msg recvfrom relabelfrom relabelto send_msg sendto setattr setopt shutdown write };
+allow $1 self:netlink_route_socket { accept append bind connect create getattr getopt ioctl listen lock name_bind nlmsg_read read recv_msg recvfrom relabelfrom relabelto send_msg sendto setattr setopt shutdown write };
+allow $1 self:netlink_firewall_socket { accept append bind connect create getattr getopt ioctl listen lock name_bind read recv_msg recvfrom relabelfrom relabelto send_msg sendto setattr setopt shutdown write };
+allow $1 self:netlink_firewall_socket nlmsg_write;
+allow $1 self:netlink_tcpdiag_socket { accept append bind connect create getattr getopt ioctl listen lock name_bind read recv_msg recvfrom relabelfrom relabelto send_msg sendto setattr setopt shutdown write };
+allow $1 self:netlink_tcpdiag_socket nlmsg_read;
+allow $1 self:netlink_nflog_socket { accept append bind connect create getattr getopt ioctl listen lock name_bind read recv_msg recvfrom relabelfrom relabelto send_msg sendto setattr setopt shutdown write };
+allow $1 self:netlink_xfrm_socket { accept append bind connect create getattr getopt ioctl listen lock name_bind read recv_msg recvfrom relabelfrom relabelto send_msg sendto setattr setopt shutdown write };
+allow $1 self:netlink_xfrm_socket { nlmsg_read nlmsg_write };
+allow $1 self:netlink_selinux_socket { accept append bind connect create getattr getopt ioctl listen lock name_bind read recv_msg recvfrom relabelfrom relabelto send_msg sendto setattr setopt shutdown write };
+allow $1 self:netlink_audit_socket { accept append bind connect create getattr getopt ioctl listen lock name_bind read recv_msg recvfrom relabelfrom relabelto send_msg sendto setattr setopt shutdown write };
+allow $1 self:netlink_dnrt_socket { accept append bind connect create getattr getopt ioctl listen lock name_bind read recv_msg recvfrom relabelfrom relabelto send_msg sendto setattr setopt shutdown write };
+allow $1 self:netlink_kobject_uevent_socket { accept append bind connect create getattr getopt ioctl listen lock name_bind read recv_msg recvfrom relabelfrom relabelto send_msg sendto setattr setopt shutdown write };
+')
+
+define(`allow_admin_relabel',`
+#
+allow $1 { file_type fs_type }:{ blk_file chr_file dir fifo_file file lnk_file sock_file } { relabelfrom relabelto setattr };
+')
+
+define(`allow_admin_part_relabel',`
+#allow_file_relabel is used in file write 
+#allow $1 writable_type:{ blk_file chr_file dir fifo_file file lnk_file sock_file } { relabelfrom relabelto };
+allow $1 self:process setfscreate;
+')
+
+define(`allow_admin_getsecurity',`
+#
+allow $1 security_t:dir { getattr read search };
+allow $1 security_t:file { getattr read };
+allow $1 security_t:security { check_context compute_av compute_create compute_relabel compute_user };
+')
+
+define(`allow_admin_setsecurity',`
+#
+allow $1 security_t:file write;
+')
+
+define(`allow_admin_setenforce',`
+#
+allow $1 security_t:security setenforce;
+')
+
+define(`allow_admin_setbool',`
+#
+allow $1 security_t:security setbool;
+')
+
+define(`allow_admin_load_policy',`
+#
+allow $1 security_t:security load_policy;
+')
+
+define(`allow_admin_getsecattr',`
+#
+allow $1 domain:process getattr;
+')
+
+define(`allow_admin_setsecparam',`
+#
+allow $1 security_t:security setsecparam;
+')
+
+define(`allow_admin_devcreate',`
+#In addition, allow_file_devcrete is used in file write
+allow $1 self:capability mknod;
+#allow $1 writable_type:{ blk_file chr_file } { create link rename unlink };
+')
+
+define(`allow_admin_search',`
+#
+allow $1 file_type:dir { getattr read search };
+allow $1 file_type:{ blk_file chr_file dir fifo_file file lnk_file sock_file } getattr;
+allow $1 file_type:lnk_file read;
+')
+
+define(`allow_admin_read',`
+#
+allow $1 file_type:{ blk_file chr_file dir fifo_file file lnk_file sock_file } { getattr ioctl lock read };
+allow $1 file_type:dir search;
+')
+
+define(`allow_admin_write',`
+#
+allow $1 file_type:{ blk_file chr_file dir fifo_file file lnk_file sock_file } { append create link rename setattr unlink write };
+allow $1 file_type:dir { reparent rmdir };
+')
+
+define(`allow_admin_cap_net_admin',`
+#
+allow $1 self:capability net_admin;
+allow $1 self:netlink_route_socket nlmsg_write;
+')
+
+define(`allow_admin_cap_sys_boot',`
+#
+allow $1 self:capability sys_boot;
+')
+
+define(`allow_admin_cap_dac_override',`
+#
+allow $1 self:capability dac_override;
+')
+
+define(`allow_admin_cap_dac_read_search',`
+#
+allow $1 self:capability dac_read_search;
+')
+
+define(`allow_admin_cap_setuid',`
+#
+allow $1 self:capability setuid;
+')
+
+define(`allow_admin_cap_setgid',`
+#
+allow $1 self:capability setgid;
+')
+
+define(`allow_admin_cap_chown',`
+#
+allow $1 self:capability chown;
+')
+
+define(`allow_admin_cap_setpcap',`
+#
+allow $1 self:capability setpcap;
+')
+
+define(`allow_admin_cap_fowner',`
+#
+allow $1 self:capability fowner;
+')
+
+define(`allow_admin_cap_fsetid',`
+#
+allow $1 self:capability fsetid;
+')
+
+define(`allow_admin_cap_linux_immutable',`
+#
+allow $1 self:capability linux_immutable;
+')
+
+define(`allow_admin_execmem',`
+#
+allow $1 self:process execmem;
+')
+
+define(`allow_admin_execstack',`
+#
+allow $1 self:process execstack;
+')
+
+define(`allow_admin_execheap',`
+#
+allow $1 self:process execheap;
+')
+
+define(`allow_admin_quotaon',`
+#
+allow $1 file_type:file quotaon;
+allow $1 fs_type:filesystem quotamod;
+')
+
+define(`allow_admin_mount',`
+#
+allow $1 file_type:dir mounton;
+allow $1 fs_type:filesystem { mount remount unmount };
+')
+
+define(`allow_admin_cap_sys_rawio',`
+#
+allow $1 self:capability sys_rawio;
+')
+
+define(`allow_admin_cap_sys_chroot',`
+#
+allow $1 self:capability sys_chroot;
+')
+
+define(`allow_admin_unlabel',`
+#
+allow $1 { file_t unlabeled_t }:dir { add_name getattr ioctl lock read remove_name reparent rmdir search };
+allow $1 { file_t unlabeled_t }:{ blk_file chr_file dir fifo_file file lnk_file sock_file } { append create getattr ioctl link lock read rename setattr unlink write };
+allow $1 { file_t unlabeled_t }:file { execute execute_no_trans };
+')
+
+define(`allow_admin_cap_ipc_lock',`
+#
+allow $1 self:capability ipc_lock;
+')
+
+define(`allow_admin_cap_sys_nice',`
+#
+allow $1 self:capability sys_nice;
+')
+
+define(`allow_admin_cap_sys_resource',`
+#
+allow $1 self:capability sys_resource;
+')
+
+define(`allow_admin_cap_sys_time',`
+#
+allow $1 self:capability sys_time;
+')
+
+define(`allow_admin_cap_sys_admin',`
+#
+allow $1 self:capability sys_admin;
+')
+
+define(`allow_admin_cap_sys_tty_config',`
+#
+allow $1 self:capability sys_tty_config;
+')
+
+define(`allow_admin_ptrace',`
+#
+allow $1 domain:process ptrace;
+')
+
+##Integrated permissions for kernel key subsystem
+define(`allow_key_v',`
+#
+allow $1 $2:key view;
+')
+
+define(`allow_key_r',`
+#
+allow $1 $2:key read;
+')
+
+define(`allow_key_w',`
+#
+allow $1 $2:key write;
+')
+
+define(`allow_key_s',`
+#
+allow $1 $2:key search;
+')
+
+define(`allow_key_l',`
+#
+allow $1 $2:key link;
+')
+
+define(`allow_key_t',`
+#
+allow $1 $2:key setattr;
+')
+
+define(`allow_key_c',`
+#
+allow $1 $2:key create;
+')
+
+##Rules integrated in transition rule
+define(`domain_trans_allow',`
+#allow statements used in domain_transThis is allowed in domain_trans rule
+allow $1 $3:process transition;
+allow $3 $2:file entrypoint;
+allow $3 $1:process sigchld;
+allow $3 $1:fifo_file { append getattr ioctl lock read write };
+')
+
+define(`domain_dyn_trans_allow',`
+#allow statements used in domain_dyn_transThis is allowed in domain_trans rule when entry point is not specified.
+allow $1 $3:process dyntransition;
+allow $1 self:process setcurrent;
+')
+
+define(`file_type_trans_allow',`
+#allow statements used in file_type_auto_trans macroThis is allowed in allow exclusive rule
+allow $1 $2:dir { getattr ioctl lock read search write };
+')
+

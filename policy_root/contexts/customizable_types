@@ -1,0 +1,15 @@
+dev_log_t
+initrc_tmp_t
+etc_runtime_t
+syslogd_tmp_t
+initrc_tmpfs_t
+syslogd_tmpfs_t
+ldconfig_cache_t
+unconfined_tmp_t
+initrc_var_tmp_t
+initrc_var_run_t
+syslogd_var_tmp_t
+syslogd_var_run_t
+unconfined_tmpfs_t
+unconfined_var_tmp_t
+unconfined_var_run_t

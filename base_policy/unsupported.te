@@ -1,0 +1,46 @@
+##Unsupported permission
+#Dead Permission
+#allow domain file_type:{ blk_file chr_file dir fifo_file file lnk_file sock_file } swapon;
+#allow domain domain:all_socket_class { relabelfrom relabelto };
+#allow domain domain:unix_stream_socket { acceptfrom newconn };
+#allow domain domain:netlink_firewall_socket nlmsg_read;
+#allow domain domain:netlink_ip6fw_socket { accept append bind connect create getattr getopt ioctl listen lock name_bind nlmsg_read nlmsg_write read recv_msg recvfrom relabelfrom relabelto send_msg sendto setattr setopt shutdown write };
+#allow domain self:netlink_tcpdiag_socket nlmsg_write;
+#allow domain domain:ipc { associate create destroy getattr read setattr unix_read unix_write write };
+#Unsupported features in SPDL
+allow domain security_t:security { compute_member setcheckreqprot };
+#Unsupported because related to DAC and POSIX capabilities  
+allow domain domain:process { getcap setcap };
+#Unsupported because low effect to security
+allow domain { file_type domain }:{ blk_file chr_file dir fifo_file file lnk_file sock_file } getattr;
+allow domain domain:process { fork getpgid getsched getsession noatsecure rlimitinh setpgid share siginh };
+allow domain domain:system ipc_info;
+allow domain self:capability lease;
+allow file_type fs_type:filesystem associate;
+allow domain fs_type:filesystem { getattr quotaget };
+# Unsupported because of complete overlap 
+allow domain self:capability { audit_write ipc_owner kill net_bind_service sys_ptrace };
+allow domain { file_type domain }:dir { add_name remove_name };
+# Unsupported because of Partly overlap
+allow domain domain:process { setrlimit setsched };
+allow domain self:capability audit_control;
+#Implicit overlap
+allow domain domain:fd use;
+allow domain domain:process setexec;
+allow domain self:tcp_socket { accept append bind connect create getattr getopt ioctl listen lock read setattr setopt shutdown write };
+allow domain self:udp_socket { accept append bind connect create getattr getopt ioctl listen lock read setattr setopt shutdown write };
+allow domain domain:unix_dgram_socket { create getattr getopt ioctl lock relabelfrom relabelto setattr setopt shutdown };
+allow domain domain:unix_stream_socket { create getattr getopt ioctl lock relabelfrom relabelto setattr setopt shutdown };
+#Pending.. May be changed
+allow domain unlabeled_t:packet { recv send };
+allow domain self:packet_socket { accept append bind connect create getattr getopt ioctl listen lock name_bind read recv_msg recvfrom relabelfrom relabelto send_msg sendto setattr setopt shutdown write };
+allow domain self:key_socket { accept append bind connect create getattr getopt ioctl listen lock name_bind read recv_msg recvfrom relabelfrom relabelto send_msg sendto setattr setopt shutdown write };
+allow domain self:dccp_socket { accept append bind connect create getattr getopt ioctl listen lock name_bind name_connect node_bind read recv_msg recvfrom relabelfrom relabelto send_msg sendto setattr setopt shutdown write };
+#Does not support user space AVC
+allow domain self:passwd { chfn chsh crontab passwd rootok };
+allow domain domain:dbus { acquire_svc send_msg };
+allow domain domain:nscd { admin getgrp gethost getpwd getstat shmemgrp shmemhost shmempwd };
+allow domain unlabeled_t:association *;
+allow domain self:context contains;
+allow domain domain:context translate;
+##End of unsupported permissions
